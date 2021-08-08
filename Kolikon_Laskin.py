@@ -39,4 +39,5 @@ print('TR Susmot ', TranslatorThreee * 7.5)
 print('TR Nuclide',TranslatorFourr * 7.5)
 print('PR Susmot ', ProofreaderOnee * 7.5)
 print('PR Nuclide',ProofreaderTwoo * 7.5)
-
+print("---------------------")
+input("Paina enteriä sulkeaksesi")
