@@ -2,16 +2,32 @@ import pandas as pd
 from pathlib import Path
 import glob
 import os
-
+import time
+import sys
 ################# CONFIG #####################
 #
 #
 rounding = True
+animation = True
 #
 #
 ##############################################
+
+
+def prints(str):
+    if animation:
+       for c in str + '\n':
+         sys.stdout.write(c)
+         sys.stdout.flush()
+         time.sleep(3./90)
+    else:
+        print(str)
+
+prints('hello world')
+
 # Finding the newest file
-valinta = input("Paina 1, jos haluat automaattisen tiedoston etsinnän. Paina 2 jos haluat syöttää itse tiedoston sijainin.\n")
+prints("Paina 1, jos haluat automaattisen tiedoston etsinnän. Paina 2 jos haluat syöttää itse tiedoston sijainin.\n")
+valinta = input("")
 
 def laskin():
     # Gathering the necessary information
@@ -25,13 +41,13 @@ def laskin():
     proofreader_nuclide = df.loc[df['Proofreader(s)'] == 541652140687360010, 'Words'].sum()
 
     # Presenting user with information
-    print(f"Sheetin sanamäärä: {sheetTotal}")
-    print("Käännetyt sanat")
+    prints(f"Sheetin sanamäärä: {sheetTotal}")
+    prints("Käännetyt sanat")
     print("Masterjoona:",translator_joona, "\nSiri:",translator_siri, "\nSusmot:", translator_susmot, "\nNuclide:",translator_nuclide)
-    print("---------------------")
-    print("Proofreadatut sanat:")
+    prints("---------------------")
+    prints("Proofreadatut sanat:")
     print("Susmot:", proofreader_susmot, "\nNuclide:", proofreader_nuclide)
-    print("---------------------")
+    prints("---------------------")
 
     # Taking proofreaders into the calculation
     totalWords = int(sheetTotal) + (int(sheetTotal) * 0.85)
@@ -48,36 +64,34 @@ def laskin():
     reward_nuclide = reward_nuclide * 7.5 / int(totalWords) 
     reward_susmot = reward_susmot * 7.5 / int(totalWords) 
 
-    if rounding:# If rounding is turned ON in the config, rounds the answers to 2 decimals.
+    if rounding: # If rounding is turned ON in the config, rounds the answers to 2 decimals.
 
         # Rounding up to 2 decimals
         reward_joona = str(round(reward_joona, 2))
         reward_siri = str(round(reward_siri, 2))
         reward_nuclide = str(round(reward_nuclide, 2))
         reward_susmot = str(round(reward_susmot, 2))
-
-
     # Showing rewards to the user
-
-    print("     Palkinnot")
-    print("---------------------")
-    print('Masterjoona', reward_joona)
-    print('Siri', reward_siri)
-    print('Susmot ', reward_susmot)
-    print('Nuclide', reward_nuclide)
-    print("---------------------")
-
-    input("Paina mitä tahansa sulkeaksesi laskimen")
+    prints("\n")
+    prints("     Palkinnot")
+    prints("---------------------")
+    prints('Masterjoona ' + reward_joona)
+    prints('Siri '+ reward_siri)
+    prints('Susmot '+ reward_susmot)
+    prints('Nuclide '+ reward_nuclide)
+    prints("---------------------")
+    time.sleep(10)
+    input("Paina ENTER sulkeaksesi laskimen")
 
 def autoFindCsv():
-    print("Etsitään uusinta sheettiä")
+    prints("Etsitään uusinta sheettiä")
     downloads_path = str(Path.home() / "Downloads") # Goes to %userprofile%\Downloads
     list_of_files = glob.glob(downloads_path + "\\*.csv") # Finds all .csv files
     global file
     file = max(list_of_files, key=os.path.getmtime) # Finds the newest one
     # Telling the user whats happening
-    print("Uusin sheetti löytynyt:", file)
-    print("---------------------")
+    prints("Uusin sheetti löytynyt: " + file)
+    prints("---------------------")
     laskin()
 if valinta == "1":
     autoFindCsv()
@@ -85,3 +99,11 @@ if valinta == "2":
     global file
     file = input("Anna tiedoston sijainti\n")
     laskin()
+else:
+    time.sleep(1)
+    prints(valinta + " ei ole 1 tai 2")
+    time.sleep(1)
+    prints("Otetaan käyttöön automaattinen valinta")
+    time.sleep(1)
+    prints("\n")
+    autoFindCsv()
